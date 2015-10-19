@@ -2,8 +2,11 @@ package it.jaschke.alexandria.services;
 
 import android.app.IntentService;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -42,13 +45,25 @@ public class BookService extends IntentService {
         super("Alexandria");
     }
 
+    public static boolean isConnected(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
             if (FETCH_BOOK.equals(action)) {
                 final String ean = intent.getStringExtra(EAN);
-                fetchBook(ean);
+                if (isConnected(this)) {
+                    fetchBook(ean);
+                }else{
+                    Log.d("BookService", "Network not available");
+                }
             } else if (DELETE_BOOK.equals(action)) {
                 final String ean = intent.getStringExtra(EAN);
                 deleteBook(ean);
@@ -128,6 +143,66 @@ public class BookService extends IntentService {
                 return;
             }
             bookJsonString = buffer.toString();
+            final String ITEMS = "items";
+
+            final String VOLUME_INFO = "volumeInfo";
+
+            final String TITLE = "title";
+            final String SUBTITLE = "subtitle";
+            final String AUTHORS = "authors";
+            final String DESC = "description";
+            final String CATEGORIES = "categories";
+            final String IMG_URL_PATH = "imageLinks";
+            final String IMG_URL = "thumbnail";
+
+            //If we do not have a non-null json response, no point proceeding
+            if (bookJsonString != null) {
+                //We now have a non-null json string
+                try {
+                    JSONObject bookJson = new JSONObject(bookJsonString);
+                    JSONArray bookArray;
+                    if (bookJson.has(ITEMS)) {
+                        bookArray = bookJson.getJSONArray(ITEMS);
+                    } else {
+                        Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
+                        messageIntent.putExtra(MainActivity.MESSAGE_KEY, getResources().getString(R.string.not_found));
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
+                        return;
+                    }
+
+                    JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
+
+                    String title = bookInfo.getString(TITLE);
+
+                    String subtitle = "";
+                    if (bookInfo.has(SUBTITLE)) {
+                        subtitle = bookInfo.getString(SUBTITLE);
+                    }
+
+                    String desc = "";
+                    if (bookInfo.has(DESC)) {
+                        desc = bookInfo.getString(DESC);
+                    }
+
+                    String imgUrl = "";
+                    if (bookInfo.has(IMG_URL_PATH) && bookInfo.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
+                        imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
+                    }
+
+                    writeBackBook(ean, title, subtitle, desc, imgUrl);
+
+                    if (bookInfo.has(AUTHORS)) {
+                        writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
+                    }
+                    if (bookInfo.has(CATEGORIES)) {
+                        writeBackCategories(ean, bookInfo.getJSONArray(CATEGORIES));
+                    }
+
+
+                } catch (JSONException e) {
+                    Log.e(LOG_TAG, "Error ", e);
+                }
+            }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error ", e);
         } finally {
@@ -144,61 +219,7 @@ public class BookService extends IntentService {
 
         }
 
-        final String ITEMS = "items";
 
-        final String VOLUME_INFO = "volumeInfo";
-
-        final String TITLE = "title";
-        final String SUBTITLE = "subtitle";
-        final String AUTHORS = "authors";
-        final String DESC = "description";
-        final String CATEGORIES = "categories";
-        final String IMG_URL_PATH = "imageLinks";
-        final String IMG_URL = "thumbnail";
-
-        try {
-            JSONObject bookJson = new JSONObject(bookJsonString);
-            JSONArray bookArray;
-            if(bookJson.has(ITEMS)){
-                bookArray = bookJson.getJSONArray(ITEMS);
-            }else{
-                Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
-                messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.not_found));
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
-                return;
-            }
-
-            JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
-
-            String title = bookInfo.getString(TITLE);
-
-            String subtitle = "";
-            if(bookInfo.has(SUBTITLE)) {
-                subtitle = bookInfo.getString(SUBTITLE);
-            }
-
-            String desc="";
-            if(bookInfo.has(DESC)){
-                desc = bookInfo.getString(DESC);
-            }
-
-            String imgUrl = "";
-            if(bookInfo.has(IMG_URL_PATH) && bookInfo.getJSONObject(IMG_URL_PATH).has(IMG_URL)) {
-                imgUrl = bookInfo.getJSONObject(IMG_URL_PATH).getString(IMG_URL);
-            }
-
-            writeBackBook(ean, title, subtitle, desc, imgUrl);
-
-            if(bookInfo.has(AUTHORS)) {
-                writeBackAuthors(ean, bookInfo.getJSONArray(AUTHORS));
-            }
-            if(bookInfo.has(CATEGORIES)){
-                writeBackCategories(ean,bookInfo.getJSONArray(CATEGORIES) );
-            }
-
-        } catch (JSONException e) {
-            Log.e(LOG_TAG, "Error ", e);
-        }
     }
 
     private void writeBackBook(String ean, String title, String subtitle, String desc, String imgUrl) {
