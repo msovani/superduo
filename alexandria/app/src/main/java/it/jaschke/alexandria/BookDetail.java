@@ -1,5 +1,6 @@
 package it.jaschke.alexandria;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -55,11 +57,29 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
-                getActivity().getSupportFragmentManager().popBackStack();
+
+                AlertDialog.Builder confirmDeleteBuilder = new AlertDialog.Builder(getActivity());
+                confirmDeleteBuilder.setMessage(getResources().getString(R.string.confirm_book_delete));
+                confirmDeleteBuilder.setCancelable(true);
+                confirmDeleteBuilder.setPositiveButton(getResources().getString(R.string.YES),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent bookIntent = new Intent(getActivity(), BookService.class);
+                                bookIntent.putExtra(BookService.EAN, ean);
+                                bookIntent.setAction(BookService.DELETE_BOOK);
+                                getActivity().startService(bookIntent);
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        });
+                confirmDeleteBuilder.setNegativeButton(getResources().getString(R.string.NO),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog errorDialog = confirmDeleteBuilder.create();
+                errorDialog.show();
             }
         });
         return rootView;
