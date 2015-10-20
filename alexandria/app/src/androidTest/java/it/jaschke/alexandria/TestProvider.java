@@ -43,8 +43,10 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
-        assertEquals(0, cursor.getCount());
-        cursor.close();
+        if (cursor != null) {
+            assertEquals(0, cursor.getCount());
+            cursor.close();
+        }
 
         cursor = mContext.getContentResolver().query(
                 AlexandriaContract.AuthorEntry.CONTENT_URI,
@@ -53,8 +55,10 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
-        assertEquals(0, cursor.getCount());
-        cursor.close();
+        if (cursor != null) {
+            assertEquals(0, cursor.getCount());
+            cursor.close();
+        }
 
         cursor = mContext.getContentResolver().query(
                 AlexandriaContract.CategoryEntry.CONTENT_URI,
@@ -63,8 +67,10 @@ public class TestProvider extends AndroidTestCase {
                 null,
                 null
         );
-        assertEquals(0, cursor.getCount());
-        cursor.close();
+        if (cursor != null) {
+            assertEquals(0, cursor.getCount());
+            cursor.close();
+        }
     }
 
     public void testGetType() {

@@ -25,9 +25,11 @@
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
 
+    <string name="confirm_book_add">This book has been added</string>
     <string name="confirm_book_delete">Are you sure you want to delete this book?</string>
     <string name="YES">Yes</string>
     <string name="NO">No</string>
+    <string name="OK">OK</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.

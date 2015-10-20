@@ -74,8 +74,10 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                             .onItemSelected(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry._ID)));
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
 
-                    if(imm.isAcceptingText()) { // verify if the soft keyboard is open
-                        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                    if (getActivity().getCurrentFocus().getWindowToken() != null) {
+                        if (imm.isAcceptingText()) { // verify if the soft keyboard is open
+                            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                        }
                     }
                 }
             }

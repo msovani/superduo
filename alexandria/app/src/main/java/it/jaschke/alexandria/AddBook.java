@@ -2,6 +2,7 @@ package it.jaschke.alexandria;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
@@ -127,11 +129,29 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
-                bookIntent.setAction(BookService.DELETE_BOOK);
-                getActivity().startService(bookIntent);
-                ean.setText("");
+
+                AlertDialog.Builder confirmDeleteBuilder = new AlertDialog.Builder(getActivity());
+                confirmDeleteBuilder.setMessage(getResources().getString(R.string.confirm_book_delete));
+                confirmDeleteBuilder.setCancelable(true);
+                confirmDeleteBuilder.setPositiveButton(getResources().getString(R.string.YES),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent bookIntent = new Intent(getActivity(), BookService.class);
+                                bookIntent.putExtra(BookService.EAN, ean.getText().toString());
+                                bookIntent.setAction(BookService.DELETE_BOOK);
+                                getActivity().startService(bookIntent);
+                                ean.setText("");
+                            }
+                        });
+                confirmDeleteBuilder.setNegativeButton(getResources().getString(R.string.NO),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog errorDialog = confirmDeleteBuilder.create();
+                errorDialog.show();
             }
         });
 
@@ -200,9 +220,23 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
 
-        if(imm.isAcceptingText()) { // verify if the soft keyboard is open
-            imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        if (getActivity().getCurrentFocus()!=null) {
+            if (imm.isAcceptingText()) { // verify if the soft keyboard is open
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            }
         }
+        AlertDialog.Builder confirmAddBuilder = new AlertDialog.Builder(getActivity());
+        confirmAddBuilder.setMessage(getResources().getString(R.string.confirm_book_add));
+        confirmAddBuilder.setCancelable(true);
+        confirmAddBuilder.setPositiveButton(getResources().getString(R.string.OK),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    dialog.cancel();
+                    }
+                });
+
+        AlertDialog addDialog = confirmAddBuilder.create();
+        addDialog.show();
     }
 
     @Override
