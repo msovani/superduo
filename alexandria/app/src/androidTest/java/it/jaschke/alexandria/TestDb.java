@@ -88,7 +88,7 @@ public class TestDb extends AndroidTestCase {
         // test category table
 
         values = getCategoryValues();
-        db.insert(AlexandriaContract.CategoryEntry.TABLE_NAME, null, values)
+        db.insert(AlexandriaContract.CategoryEntry.TABLE_NAME, null, values);
 
         columns = new String[]{
                 AlexandriaContract.CategoryEntry._ID,

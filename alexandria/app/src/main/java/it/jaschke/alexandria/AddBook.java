@@ -288,9 +288,6 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
                     Log.d(TAG, "No barcode captured, intent data is null");
                 }
-            } else {
-//                statusMessage.setText(String.format(getString(R.string.barcode_error),
-//                        CommonStatusCodes.getStatusCodeString(resultCode)));
             }
         }
         else {

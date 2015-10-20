@@ -99,12 +99,14 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
-        if(bookEntry.getCount()>0){
-            bookEntry.close();
-            return;
-        }
+        if (bookEntry != null) {
+            if (bookEntry.getCount() > 0) {
+                bookEntry.close();
+                return;
+            }
 
-        bookEntry.close();
+            bookEntry.close();
+        }
 
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
