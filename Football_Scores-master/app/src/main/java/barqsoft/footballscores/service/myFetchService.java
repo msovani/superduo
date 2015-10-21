@@ -42,7 +42,6 @@ public class myFetchService extends IntentService
         getData("n2");
         getData("p2");
 
-        return;
     }
 
     private void getData (String timeFrame)
@@ -68,7 +67,7 @@ public class myFetchService extends IntentService
 
             // Read the input stream into a String
             InputStream inputStream = m_connection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             if (inputStream == null) {
                 // Nothing to do.
                 return;
@@ -164,15 +163,15 @@ public class myFetchService extends IntentService
         final String MATCH_DAY = "matchday";
 
         //Match data
-        String League = null;
-        String mDate = null;
-        String mTime = null;
-        String Home = null;
-        String Away = null;
-        String Home_goals = null;
-        String Away_goals = null;
-        String match_id = null;
-        String match_day = null;
+        String League;
+        String mDate;
+        String mTime;
+        String Home;
+        String Away;
+        String Home_goals;
+        String Away_goals;
+        String match_id;
+        String match_day;
 
 
         try {
@@ -180,7 +179,7 @@ public class myFetchService extends IntentService
 
 
             //ContentValues to be inserted
-            Vector<ContentValues> values = new Vector <ContentValues> (matches.length());
+            Vector<ContentValues> values = new Vector<>(matches.length());
             for(int i = 0;i < matches.length();i++)
             {
 
@@ -209,11 +208,11 @@ public class myFetchService extends IntentService
                     mDate = match_data.getString(MATCH_DATE);
                     mTime = mDate.substring(mDate.indexOf("T") + 1, mDate.indexOf("Z"));
                     mDate = mDate.substring(0,mDate.indexOf("T"));
-                    SimpleDateFormat match_date = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
+                    SimpleDateFormat match_date = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", java.util.Locale.getDefault());
                     match_date.setTimeZone(TimeZone.getTimeZone("UTC"));
                     try {
                         Date parseddate = match_date.parse(mDate+mTime);
-                        SimpleDateFormat new_date = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
+                        SimpleDateFormat new_date = new SimpleDateFormat("yyyy-MM-dd:HH:mm", java.util.Locale.getDefault());
                         new_date.setTimeZone(TimeZone.getDefault());
                         mDate = new_date.format(parseddate);
                         mTime = mDate.substring(mDate.indexOf(":") + 1);
@@ -222,7 +221,7 @@ public class myFetchService extends IntentService
                         if(!isReal){
                             //This if statement changes the dummy data's date to match our current date range.
                             Date fragmentdate = new Date(System.currentTimeMillis()+((i-2)*86400000));
-                            SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
+                            SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
                             mDate=mformat.format(fragmentdate);
                         }
                     }
