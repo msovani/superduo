@@ -1,7 +1,9 @@
 package barqsoft.footballscores;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +12,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.RemoteViews;
+
+import java.util.Random;
 
 public class ScoresWidget extends AppWidgetProvider {
 
@@ -41,5 +46,29 @@ public class ScoresWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         super.onUpdate(context, appWidgetManager, appWidgetIds);
+        // Get all ids
+        ComponentName thisWidget = new ComponentName(context,
+                ScoresWidget.class);
+        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        for (int widgetId : allWidgetIds) {
+            // create some random data
+            int number = (new Random().nextInt(100));
+
+            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                    R.layout.content_scores_widget);
+            // Set the text
+            remoteViews.setTextViewText(R.id.scrores_text, String.valueOf(number));
+
+//            // Register an onClickListener
+            Intent intent = new Intent(context, ScoresWidget.class);
+//
+            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+//
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            remoteViews.setOnClickPendingIntent(R.id.scrores_text, pendingIntent);
+            appWidgetManager.updateAppWidget(widgetId, remoteViews);
+        }
     }
 }
