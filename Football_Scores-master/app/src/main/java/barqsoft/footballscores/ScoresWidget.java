@@ -19,7 +19,15 @@ import java.util.Random;
 import barqsoft.footballscores.service.ScoreWidgetUpdateService;
 
 public class ScoresWidget extends AppWidgetProvider {
-
+    public static final int COL_HOME = 3;
+    public static final int COL_AWAY = 4;
+    public static final int COL_HOME_GOALS = 6;
+    public static final int COL_AWAY_GOALS = 7;
+    public static final int COL_DATE = 1;
+    public static final int COL_LEAGUE = 5;
+    public static final int COL_MATCHDAY = 9;
+    public static final int COL_ID = 8;
+    public static final int COL_MATCHTIME = 2;
     scoresAdapter mAdapter;
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
@@ -69,12 +77,19 @@ public class ScoresWidget extends AppWidgetProvider {
             {
                 if (dataCursor.moveToLast())
                 {
-                    for (int i=0; i < dataCursor.getColumnCount(); i ++) {
+                    for (int i = 0; i < dataCursor.getColumnCount(); i++) {
                         Log.d("WidgetFactory", "There are : " + dataCursor.getColumnName(i));
                     }
 
-                    remoteViews.setTextViewText(R.id.home_name, dataCursor.getString(3));
-                    remoteViews.setTextViewText(R.id.away_name, dataCursor.getString(4));
+                    remoteViews.setTextViewText(R.id.home_name, dataCursor.getString(COL_HOME));
+                    remoteViews.setTextViewText(R.id.away_name, dataCursor.getString(COL_AWAY));
+                    remoteViews.setTextViewText(R.id.data_textview, dataCursor.getString(COL_MATCHTIME));
+                    remoteViews.setTextViewText(R.id.score_textview, Utilies.getScores(dataCursor.getInt(COL_HOME_GOALS),dataCursor.getInt(COL_AWAY_GOALS)));
+//                    mHolder.match_id = dataCursor.getDouble(COL_ID);
+                    remoteViews.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(
+                            dataCursor.getString(COL_HOME)));
+                    remoteViews.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(
+                            dataCursor.getString(COL_AWAY)));
                     appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
                 }

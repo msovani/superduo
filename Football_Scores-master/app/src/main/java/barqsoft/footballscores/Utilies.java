@@ -10,6 +10,7 @@ public class Utilies
     public static final int CHAMPIONS_LEAGUE = 362;
     public static final int PRIMERA_DIVISION = 358;
     public static final int BUNDESLIGA = 351;
+
     public static String getLeague(int league_num)
     {
         switch (league_num)
@@ -67,7 +68,7 @@ public class Utilies
 
     public static int getTeamCrestByTeamName (String teamname)
     {
-        if (teamname==null){return R.drawable.no_icon;}
+        if (teamname==null){return R.drawable.soccerball;}
         switch (teamname)
         { //This is the set of icons that are currently in the app. Feel free to find and add more
             //as you go.
@@ -93,7 +94,7 @@ public class Utilies
             case "Burnley FC" : return R.drawable.burney_fc_hd_logo;
             case "Queens Park Rangers FC" : return R.drawable.queens_park_rangers_hd_logo;
             case "Hull City AFC" : return R.drawable.hull_city_afc_hd_logo;
-            default: return R.drawable.no_icon;
+            default: return R.drawable.soccerball;
         }
     }
 }
