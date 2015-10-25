@@ -6,7 +6,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_scores_widget"
     tools:context="barqsoft.footballscores.ScoresWidget"
-    android:background="@color/background_floating_material_light"
     android:id="@+id/widget_relative_layout"
     >
 
