@@ -16,11 +16,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * This class defines main ui for scrolling across days
  * Created by yehya khaled on 2/27/2015.
  */
 public class PagerFragment extends Fragment
 {
-    public static final int NUM_PAGES = 5;
+    private static final int NUM_PAGES = 5;
     public ViewPager mPagerHandler;
     private MainScreenFragment[] viewFragments = new MainScreenFragment[5];
     @Override

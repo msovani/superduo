@@ -5,9 +5,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
+ * This is a view holder class which maps the layout elements with the java object
  * Created by yehya khaled on 2/26/2015.
  */
-public class ViewHolder
+class ViewHolder
 {
     public TextView home_name;
     public TextView away_name;

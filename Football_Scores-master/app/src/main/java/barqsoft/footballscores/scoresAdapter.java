@@ -11,24 +11,24 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
+ * This adapter is used in main application to show the data obtained from api via local database
  * Created by yehya khaled on 2/26/2015.
  */
 public class scoresAdapter extends CursorAdapter
 {
-    public static final int COL_HOME = 3;
-    public static final int COL_AWAY = 4;
-    public static final int COL_HOME_GOALS = 6;
-    public static final int COL_AWAY_GOALS = 7;
-    public static final int COL_DATE = 1;
-    public static final int COL_LEAGUE = 5;
-    public static final int COL_MATCHDAY = 9;
-    public static final int COL_ID = 8;
-    public static final int COL_MATCHTIME = 2;
+    private static final int COL_HOME = 3;
+    private static final int COL_AWAY = 4;
+    private static final int COL_HOME_GOALS = 6;
+    private static final int COL_AWAY_GOALS = 7;
+    private static final int COL_LEAGUE = 5;
+    private static final int COL_MATCHDAY = 9;
+    private static final int COL_ID = 8;
+    private static final int COL_MATCHTIME = 2;
     public double detail_match_id = 0;
 
     public scoresAdapter(Context context,Cursor cursor,int flags)
     {
-        super(context,cursor,flags);
+        super(context, null,flags);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class scoresAdapter extends CursorAdapter
         }
 
     }
-    public Intent createShareForecastIntent(String ShareText) {
+    private Intent createShareForecastIntent(String ShareText) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
         shareIntent.setType("text/plain");

@@ -8,51 +8,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.RemoteViews;
 
-import java.util.Random;
-
-import barqsoft.footballscores.service.ScoreWidgetUpdateService;
-
 public class ScoresWidget extends AppWidgetProvider {
-    public static final int COL_HOME = 3;
-    public static final int COL_AWAY = 4;
-    public static final int COL_HOME_GOALS = 6;
-    public static final int COL_AWAY_GOALS = 7;
+    private static final int COL_HOME = 3;
+    private static final int COL_AWAY = 4;
+    private static final int COL_HOME_GOALS = 6;
+    private static final int COL_AWAY_GOALS = 7;
     public static final int COL_DATE = 1;
     public static final int COL_LEAGUE = 5;
     public static final int COL_MATCHDAY = 9;
     public static final int COL_ID = 8;
-    public static final int COL_MATCHTIME = 2;
+    private static final int COL_MATCHTIME = 2;
     scoresAdapter mAdapter;
-    @Override
-    public void onDeleted(Context context, int[] appWidgetIds) {
-        super.onDeleted(context, appWidgetIds);
-    }
 
-    @Override
-    public void onDisabled(Context context) {
-        super.onDisabled(context);
-    }
-
-    @Override
-    public void onEnabled(Context context) {
-        super.onEnabled(context);
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-    }
-
-    @Override
-    public void onRestored(Context context, int[] oldWidgetIds, int[] newWidgetIds) {
-        super.onRestored(context, oldWidgetIds, newWidgetIds);
-    }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -70,44 +39,33 @@ public class ScoresWidget extends AppWidgetProvider {
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
 
+            if (dataCursor != null) {
 
-            Log.d("WidgetFactory", "There are : " + dataCursor.getCount());
+                if (dataCursor.getCount() > 0) {
+                    if (dataCursor.moveToLast()) {
+                        remoteViews.setTextViewText(R.id.home_name, dataCursor.getString(COL_HOME));
+                        remoteViews.setTextViewText(R.id.away_name, dataCursor.getString(COL_AWAY));
+                        remoteViews.setTextViewText(R.id.data_textview, dataCursor.getString(COL_MATCHTIME));
+                        remoteViews.setTextViewText(R.id.score_textview, Utilies.getScores(dataCursor.getInt(COL_HOME_GOALS), dataCursor.getInt(COL_AWAY_GOALS)));
 
-            if (dataCursor.getCount() > 0)
-            {
-                if (dataCursor.moveToLast())
-                {
-                    for (int i = 0; i < dataCursor.getColumnCount(); i++) {
-                        Log.d("WidgetFactory", "There are : " + dataCursor.getColumnName(i));
+                        remoteViews.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(
+                                dataCursor.getString(COL_HOME)));
+                        remoteViews.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(
+                                dataCursor.getString(COL_AWAY)));
+                        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+
                     }
-
-                    remoteViews.setTextViewText(R.id.home_name, dataCursor.getString(COL_HOME));
-                    remoteViews.setTextViewText(R.id.away_name, dataCursor.getString(COL_AWAY));
-                    remoteViews.setTextViewText(R.id.data_textview, dataCursor.getString(COL_MATCHTIME));
-                    remoteViews.setTextViewText(R.id.score_textview, Utilies.getScores(dataCursor.getInt(COL_HOME_GOALS),dataCursor.getInt(COL_AWAY_GOALS)));
-//                    mHolder.match_id = dataCursor.getDouble(COL_ID);
-                    remoteViews.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(
-                            dataCursor.getString(COL_HOME)));
-                    remoteViews.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(
-                            dataCursor.getString(COL_AWAY)));
-                    appWidgetManager.updateAppWidget(widgetId, remoteViews);
 
                 }
 
+                Intent intent = new Intent(context, ScoresWidget.class);
+                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                remoteViews.setOnClickPendingIntent(R.id.away_name, pendingIntent);
+                appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                dataCursor.close();
             }
-
-
-//            // Register an onClickListener
-            Intent intent = new Intent(context, ScoresWidget.class);
-//
-            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-//            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-//
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.away_name, pendingIntent);
-            appWidgetManager.updateAppWidget(widgetId, remoteViews);
-            dataCursor.close();
         }
 
 

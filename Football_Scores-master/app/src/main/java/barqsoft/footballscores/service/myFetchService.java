@@ -26,11 +26,12 @@ import barqsoft.footballscores.DatabaseContract;
 import barqsoft.footballscores.R;
 
 /**
+ * This class contains interfaces with the api server
  * Created by yehya khaled on 3/2/2015.
  */
 public class myFetchService extends IntentService
 {
-    public static final String LOG_TAG = "myFetchService";
+    private static final String LOG_TAG = "myFetchService";
     public myFetchService()
     {
         super("myFetchService");

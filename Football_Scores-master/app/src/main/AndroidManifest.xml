@@ -38,10 +38,6 @@
 
         <service android:name=".service.myFetchService" />
 
-        <service android:name=".service.ScoreWidgetUpdateService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"
-            android:exported="false" />
-
         <receiver
             android:icon="@drawable/ic_launcher"
             android:label="Football Scores"

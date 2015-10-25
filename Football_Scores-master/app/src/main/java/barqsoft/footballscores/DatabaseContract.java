@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
+ * This class defines database constants such as table name, content provider uri
  * Created by yehya khaled on 2/25/2015.
  */
 public class DatabaseContract
@@ -46,7 +47,7 @@ public class DatabaseContract
         }
     }
     //URI data
-    public static final String CONTENT_AUTHORITY = "barqsoft.footballscores";
-    public static final String PATH = "scores";
+    private static final String CONTENT_AUTHORITY = "barqsoft.footballscores";
+    private static final String PATH = "scores";
     public static Uri BASE_CONTENT_URI = Uri.parse("content://"+CONTENT_AUTHORITY);
 }
