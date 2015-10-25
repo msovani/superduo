@@ -195,6 +195,13 @@ public class myFetchService extends IntentService
                         League.equals(SERIE_A)             ||
                         League.equals(BUNDESLIGA1)         ||
                         League.equals(BUNDESLIGA2)         ||
+                        League.equals(LIGUE1)              ||
+                        League.equals(LIGUE2)              ||
+                        League.equals(PRIMERA_LIGA)              ||
+                        League.equals(LIGUE2)              ||
+                        League.equals(Bundesliga3)              ||
+                        League.equals(EREDIVISIE)              ||
+                        League.equals(SEGUNDA_DIVISION)              ||
                         League.equals(PRIMERA_DIVISION)     )
                 {
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
@@ -250,11 +257,16 @@ public class myFetchService extends IntentService
                     values.add(match_values);
                 }
             }
-            int inserted_data = 0;
+            int inserted_data;
             ContentValues[] insert_data = new ContentValues[values.size()];
             values.toArray(insert_data);
             inserted_data = mContext.getContentResolver().bulkInsert(
                     DatabaseContract.BASE_CONTENT_URI,insert_data);
+            if (inserted_data == 0)
+            {
+                Log.e(LOG_TAG,"Error inserting data in local database");
+
+            }
 
         }
         catch (JSONException e)
