@@ -72,6 +72,9 @@ public class Utilies
         { //This is the set of icons that are currently in the app. Feel free to find and add more
             //as you go.
             case "Arsenal London FC" : return R.drawable.arsenal;
+            case "Arsenal FC" : return R.drawable.arsenal;
+            case "Aston Villa FC" : return R.drawable.aston_villa;
+            case "Manchester City FC": return R.drawable.manchester_city;
             case "Manchester United FC" : return R.drawable.manchester_united;
             case "Swansea City" : return R.drawable.swansea_city_afc;
             case "Leicester City" : return R.drawable.leicester_city_fc_hd_logo;
@@ -81,6 +84,15 @@ public class Utilies
             case "West Bromwich Albion" : return R.drawable.west_bromwich_albion_hd_logo;
             case "Sunderland AFC" : return R.drawable.sunderland;
             case "Stoke City FC" : return R.drawable.stoke_city;
+            case "Newcastle United FC": return R.drawable.newcastle_united;
+            case "Levante UD": return R.drawable.levante;
+            case "Liverpool FC": return R.drawable.liverpool;
+            case "Southampton FC": return R.drawable.southampton_fc;
+            case "Chealsea FC" : return R.drawable.chelsea;
+            case "Chelsea Palace FC" : return R.drawable.crystal_palace_fc;
+            case "Burnley FC" : return R.drawable.burney_fc_hd_logo;
+            case "Queens Park Rangers FC" : return R.drawable.queens_park_rangers_hd_logo;
+            case "Hull City AFC" : return R.drawable.hull_city_afc_hd_logo;
             default: return R.drawable.no_icon;
         }
     }
