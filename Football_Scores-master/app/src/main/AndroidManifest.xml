@@ -38,6 +38,9 @@
 
         <service android:name=".service.myFetchService" />
 
+        <service android:name=".service.ScoresWidgetService"/>
+
+
         <receiver
             android:icon="@drawable/ic_launcher"
             android:label="Football Scores"

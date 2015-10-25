@@ -7,6 +7,7 @@
     tools:showIn="@layout/activity_scores_widget"
     tools:context="barqsoft.footballscores.ScoresWidget"
     android:background="@color/background_floating_material_light"
+    android:id="@+id/widget_relative_layout"
     >
 
     <include layout="@layout/scores_list_item" android:id="@+id/list_widget_item"/>
