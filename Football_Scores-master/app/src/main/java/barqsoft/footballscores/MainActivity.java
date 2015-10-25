@@ -11,13 +11,13 @@ public class MainActivity extends AppCompatActivity
 {
     public static int selected_match_id;
     public static int current_fragment = 2;
-    private static String LOG_TAG = "MainActivity";
     private final String save_tag = "Save Test";
     private PagerFragment my_main;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String LOG_TAG = "MainActivity";
         Log.d(LOG_TAG, "Reached MainActivity onCreate");
         if (savedInstanceState == null) {
             my_main = new PagerFragment();
