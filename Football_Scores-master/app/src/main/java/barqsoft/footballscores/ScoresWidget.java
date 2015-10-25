@@ -6,12 +6,21 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RemoteViews;
 
 import java.util.Random;
 
+import barqsoft.footballscores.service.ScoreWidgetUpdateService;
+
 public class ScoresWidget extends AppWidgetProvider {
 
+    scoresAdapter mAdapter;
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
@@ -39,19 +48,39 @@ public class ScoresWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+
         // Get all ids
         ComponentName thisWidget = new ComponentName(context,
                 ScoresWidget.class);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                R.layout.content_scores_widget);
+
+        String contentUrl = "content://barqsoft.footballscores";
+        Uri uri = Uri.parse(contentUrl);
+        Cursor dataCursor = context.getContentResolver().query(uri, null, null, null, "date");
+
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
-            // create some random data
-            int number = (new Random().nextInt(100));
 
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                    R.layout.content_scores_widget);
-            // Set the text
-            remoteViews.setTextViewText(R.id.scrores_text, String.valueOf(number));
+
+            Log.d("WidgetFactory", "There are : " + dataCursor.getCount());
+
+            if (dataCursor.getCount() > 0)
+            {
+                if (dataCursor.moveToLast())
+                {
+                    for (int i=0; i < dataCursor.getColumnCount(); i ++) {
+                        Log.d("WidgetFactory", "There are : " + dataCursor.getColumnName(i));
+                    }
+
+                    remoteViews.setTextViewText(R.id.home_name, dataCursor.getString(3));
+                    remoteViews.setTextViewText(R.id.away_name, dataCursor.getString(4));
+                    appWidgetManager.updateAppWidget(widgetId, remoteViews);
+
+                }
+
+            }
+
 
 //            // Register an onClickListener
             Intent intent = new Intent(context, ScoresWidget.class);
@@ -61,8 +90,17 @@ public class ScoresWidget extends AppWidgetProvider {
 //
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                     0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            remoteViews.setOnClickPendingIntent(R.id.scrores_text, pendingIntent);
+            remoteViews.setOnClickPendingIntent(R.id.away_name, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
+            dataCursor.close();
         }
+
+
+
+        appWidgetManager.updateAppWidget(appWidgetIds, remoteViews);
+
+
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
+
 }
