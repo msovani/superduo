@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,10 +74,14 @@ public class scoresAdapter extends CursorAdapter
             TextView match_day = (TextView) v.findViewById(R.id.matchday_textview);
             match_day.setText(Utilies.getMatchDay(cursor.getInt(COL_MATCHDAY),
                     cursor.getInt(COL_LEAGUE)));
+            //For Accessibility
+            match_day.setContentDescription(Utilies.getMatchDay(cursor.getInt(COL_MATCHDAY),
+                    cursor.getInt(COL_LEAGUE)));
+
             TextView league = (TextView) v.findViewById(R.id.league_textview);
             league.setText(Utilies.getLeague(cursor.getInt(COL_LEAGUE)));
 
-            //For Accessible application
+            //For Accessibility
             league.setContentDescription(Utilies.getLeague(cursor.getInt(COL_LEAGUE)));
 
             Button share_button = (Button) v.findViewById(R.id.share_button);
@@ -85,10 +90,15 @@ public class scoresAdapter extends CursorAdapter
                 public void onClick(View v)
                 {
                     //add Share Action
-                    context.startActivity(createShareForecastIntent(mHolder.home_name.getText()+" "
-                    +mHolder.score.getText()+" "+mHolder.away_name.getText() + " "));
+                    try {
+                        context.startActivity(createShareForecastIntent(mHolder.home_name.getText() + " "
+                                + mHolder.score.getText() + " " + mHolder.away_name.getText() + " "));
+                    }catch (android.content.ActivityNotFoundException anfe){
+                        Log.e("Share", "Unable to launch activity");
+                    }
                 }
             });
+
         }
         else
         {
